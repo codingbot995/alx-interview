@@ -1,59 +1,49 @@
 
 #!/usr/bin/python3
-"""doc doc doc"""
+"""The N queen Puzzle Module"""
 import sys
+from typing import List
 
 
-def solve_queens_problem(board_size):
-    """doc doc doc"""
-
-    def is_valid_position(pos, occupied_pos):
-        """doc doc doc"""
-        for i in range(len(occupied_pos)):
-            if (
-                occupied_pos[i] == pos or
-                occupied_pos[i] - i == pos - len(occupied_pos) or
-                occupied_pos[i] + i == pos + len(occupied_pos)
-            ):
-                return False
-        return True
-
-    def place_queens(board_size, index, occupied_pos, solutions):
-        """doc doc doc"""
-        if index == board_size:
-            solutions.append(occupied_pos[:])
-            return
-
-        for i in range(board_size):
-            if is_valid_position(i, occupied_pos):
-                occupied_pos.append(i)
-                place_queens(board_size, index + 1, occupied_pos, solutions)
-                occupied_pos.pop()
-
-    solutions = []
-    place_queens(board_size, 0, [], solutions)
-    return solutions
+def is_safe(board: List[List[int]], row: int, col: int) -> bool:
+    """Check for existence of queen"""
+    for i, j in board:
+        if j == col or \
+           i - j == row - col or \
+           i + j == row + col:
+            return False
+    return True
 
 
-def main():
-    """doc doc doc"""
+def solve_n_queens(board: List[List[int]], row: int, n: int) -> None:
+    """Solves puzzle"""
+    if row == n:
+        print(board)
+        return
+
+    for col in range(n):
+        if is_safe(board, row, col):
+            board.append([row, col])
+            solve_n_queens(board, row + 1, n)
+            board.pop()
+
+
+def main() -> None:
+    """The main function"""
     if len(sys.argv) != 2:
         print("Usage: nqueens N")
-        sys.exit(1)
-
-    try:
-        board_size = int(sys.argv[1])
-    except ValueError:
+        exit(1)
+    if sys.argv[1].isnumeric():
+        n = int(sys.argv[1])
+        if n < 4:
+            print("N must be at least 4")
+            exit(1)
+        else:
+            board = []
+            solve_n_queens(board, 0, n)
+    else:
         print("N must be a number")
-        sys.exit(1)
-
-    if board_size < 4:
-        print("N must be at least 4")
-        sys.exit(1)
-
-    solutions = solve_queens_problem(board_size)
-    for solution in solutions:
-        print([[i, solution[i]] for i in range(len(solution))])
+        exit(1)
 
 
 if __name__ == "__main__":
