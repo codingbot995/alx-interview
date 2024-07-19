@@ -1,4 +1,3 @@
-
 #!/usr/bin/python3
 """The N queen Puzzle Module"""
 import sys
